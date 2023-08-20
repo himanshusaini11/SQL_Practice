@@ -1,5 +1,5 @@
 # SQL_Practice
-Database link: postgres://Test:bQNxVzJL4g6u@ep-noisy-flower-846766.us-east-2.aws.neon.tech/DA104.1
+Database link: (postgres://Test:bQNxVzJL4g6u@ep-noisy-flower-846766.us-east-2.aws.neon.tech/DA104.1) \n
 It includes the queries during my learning process.
 # Business case - Identifying business areas with the most flight delays
 Flight delays are common in the aviation industry. If flights are delayed heavily, the delays can have cost implications, such as passenger compensation, operational costs related to staffing, and costs related to the aircraft, such as parking and storage in an airport.
