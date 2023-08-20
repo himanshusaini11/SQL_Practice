@@ -32,7 +32,7 @@ Output :
 | Otherwise     | 715         |
 
 
-### <div style="text-align: justify"> Question 2: The delays could be caused by the type of aircraft and it's design. Look into this? How many flights, out of all flights, have been delayed per manufacturer and aircraft subtype? Make sure that all delayed flights, even if there is no aircraft assigned to the flight and include the capacity of for each aircraft where available. </div>
+### <div style="text-align: justify"> Question 2: The VP of operations suggested that the delays could be caused by the type of aircraft the passengers are boarding into. Some aircraft designs are easier to board than others. Could you look into this? How many flights, out of all flights, have been delayed per manufacturer and ac subtype? Make sure that all delayed flights, even if there is no aircraft assigned to the flight and include the capacity of for each aircraft where available. </div>
 -We have to count the total number of delaed flights as per aircraft subtype and manufacturer, use ```COUNT()```.
 ~~~~sql
 SELECT
@@ -67,3 +67,7 @@ Output :
 | 332        | Airbus       | 406      | 3                   |
 | 73J        | Boeing       | 330      | 2                   |
 | 295        | Boeing       | 400      | 2                   |
+
+
+###Question 3: The head of international flights tends to be a little selfish and therefore its no surprise he wants to assess whether the international flights are not causing the delays. Could you analyse the number of delays (compared against non-delayed flights) only for the completed flights that has a capacity over 300 passengers? These airplanes tend to only be used for international flights.
+-
