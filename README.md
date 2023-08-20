@@ -13,9 +13,9 @@ It containd 4 tables:
 -Total number of flights, that means one value for each. Hence, I have to use COUNT().
 ~~~~sql
 SELECT
-        	CASE WHEN status LIKE 'Completed' AND delayed_flag LIKE 'Y' THEN 'Delayed'
-          			WHEN status LIKE 'Completed' AND delayed_flag LIKE 'N' THEN 'Not Delayed'
-                ELSE 'Otherwise' END AS flight_status,
+        CASE WHEN status LIKE 'Completed' AND delayed_flag LIKE 'Y' THEN 'Delayed'
+                WHEN status LIKE 'Completed' AND delayed_flag LIKE 'N' THEN 'Not Delayed'
+        ELSE 'Otherwise' END AS flight_status,
         COUNT(flight_id) AS num_delayed
         --status,
         --delayed_flag
