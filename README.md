@@ -40,7 +40,7 @@ SELECT
         baa.ac_subtype,
         baa.manufacturer,
         bae.capacity,
-        COUNT(baf.status) AS num_delayed_flights
+        COUNT(baf.flight_id) AS num_delayed_flights
 FROM ba_flights AS baf
 LEFT JOIN ba_aircraft AS baa
 ON baf.flight_id = baa.flight_id
