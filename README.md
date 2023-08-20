@@ -70,4 +70,25 @@ Output :
 
 
 ### Question 3: The head of international flights tends to be a little selfish and therefore its no surprise he wants to assess whether the international flights are not causing the delays. Could you analyse the number of delays (compared against non-delayed flights) only for the completed flights that has a capacity over 300 passengers? These airplanes tend to only be used for international flights.
--
+~~~sql
+SELECT
+			CASE WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'Y' THEN 'Delayed'
+      			WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'N' THEN 'Not Delayed'
+            END AS flight_status,
+      COUNT(baf.flight_id) AS num_delayed_flights
+FROM ba_flights AS baf
+LEFT JOIN ba_aircraft AS baa
+ON baf.flight_id = baa.flight_id
+LEFT JOIN ba_fuel_efficiency AS bae
+ON baa.ac_subtype = bae.ac_subtype
+
+WHERE bae.capacity > 300 AND baf.status LIKE 'Completed'
+
+GROUP BY flight_status;
+~~~~
+
+Output :
+| flight_status | num_delayed_flights |
+| ------------- | ------------------- |
+| Not Delayed   | 131                 |
+| Delayed       | 26                  |
