@@ -2,7 +2,7 @@
 It includes the queries during my learning process.
 # Business case - Identifying business areas with the most flight delays
 
-Database link: ~postgres://Test:bQNxVzJL4g6u@ep-noisy-flower-846766.us-east-2.aws.neon.tech/DA104.1~
+Database link: <postgres://Test:bQNxVzJL4g6u@ep-noisy-flower-846766.us-east-2.aws.neon.tech/DA104.1>
 
 # Question #1: What is the total number of flights that have been delayed versus not delayed for all completed flights?
 -Total number of flights, that means one value for each. Hence, I have to use COUNT().
