@@ -24,7 +24,7 @@ FROM ba_flights
 GROUP BY flight_status
 ORDER BY num_delayed;
 ~~~~
-Output : \
+Output :
 | flight_status | num_delayed |
 | ------------- | ----------- |
 | Delayed       | 56          |
