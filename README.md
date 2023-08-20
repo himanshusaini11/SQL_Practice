@@ -69,5 +69,5 @@ Output :
 | 295        | Boeing       | 400      | 2                   |
 
 
-###Question 3: The head of international flights tends to be a little selfish and therefore its no surprise he wants to assess whether the international flights are not causing the delays. Could you analyse the number of delays (compared against non-delayed flights) only for the completed flights that has a capacity over 300 passengers? These airplanes tend to only be used for international flights.
+### Question 3: The head of international flights tends to be a little selfish and therefore its no surprise he wants to assess whether the international flights are not causing the delays. Could you analyse the number of delays (compared against non-delayed flights) only for the completed flights that has a capacity over 300 passengers? These airplanes tend to only be used for international flights.
 -
