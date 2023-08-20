@@ -75,7 +75,7 @@ SELECT
 	CASE WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'Y' THEN 'Delayed'
       		WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'N' THEN 'Not Delayed'
 	END AS flight_status,
-	COUNT(baf.flight_id) AS num_delayed_flights
+	COUNT(baf.flight_id) AS num_flights
 FROM ba_flights AS baf
 LEFT JOIN ba_aircraft AS baa
 ON baf.flight_id = baa.flight_id
@@ -86,7 +86,7 @@ GROUP BY flight_status;
 ~~~~
 
 Output :
-| flight_status | num_delayed_flights |
-| ------------- | ------------------- |
-| Not Delayed   | 131                 |
-| Delayed       | 26                  |
+| flight_status | num_flights |
+| ------------- | ----------- |
+| Not Delayed   | 131         |
+| Delayed       | 26          |
