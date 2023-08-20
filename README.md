@@ -90,3 +90,7 @@ Output :
 | ------------- | ----------- |
 | Not Delayed   | 131         |
 | Delayed       | 26          |
+
+
+### Question 4: Even though the query easily compares delayed versus not-delayed flights in question 3, we still don’t have an actual comparison against flights with a lower passenger capacity. Reuse the query of question 3, but instead of filtering for capacity over 300 passengers, create a column that segments aircraft below or equal to 300 and over 300. How do the delays in total number of flights compare between the two segments?
+-
