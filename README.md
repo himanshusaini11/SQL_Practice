@@ -181,3 +181,11 @@ WHERE baf.status = 'Completed' AND baf.delayed_flag = 'Y'
 GROUP BY baa.manufacturer, bar.departure_city, baf.status, baf.delayed_flag
 ORDER BY num_flights DESC;
 ~~~~
+
+Output :
+| flights_status | manufacturer | num_flights |
+| -------------- | ------------ | ----------- |
+| Delayed        | Boeing       | 9           |
+| Delayed        |              | 5           |
+| Delayed        | Embraer      | 3           |
+| Delayed        | Airbus       | 2           |
