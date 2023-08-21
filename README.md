@@ -79,7 +79,7 @@ SELECT
 FROM ba_flights AS baf
 LEFT JOIN ba_aircraft AS baa
 ON baf.flight_id = baa.flight_id
-LEFT JOIN ba_fuel_efficiency AS bae
+INNER JOIN ba_fuel_efficiency AS bae
 ON baa.ac_subtype = bae.ac_subtype
 WHERE bae.capacity > 300 AND baf.status LIKE 'Completed'
 GROUP BY flight_status;
@@ -93,4 +93,29 @@ Output :
 
 
 ### Question 4: Even though the query easily compares delayed versus not-delayed flights in question 3, we still don’t have an actual comparison against flights with a lower passenger capacity. Reuse the query of question 3, but instead of filtering for capacity over 300 passengers, create a column that segments aircraft below or equal to 300 and over 300. How do the delays in total number of flights compare between the two segments?
--
+~~~~sql
+SELECT
+	CASE WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'Y' THEN 'Delayed'
+      		WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'N' THEN 'Not Delayed'
+	END AS flight_status,
+	CASE WHEN bae.capacity <= 300 THEN 'Below or equal 300'
+      	ELSE 'Above 300' END AS flight_segments,
+	COUNT(baf.flight_id) AS num_flights
+FROM ba_flights AS baf
+LEFT JOIN ba_aircraft AS baa
+ON baf.flight_id = baa.flight_id
+INNER JOIN ba_fuel_efficiency AS bae
+ON baa.ac_subtype = bae.ac_subtype
+
+--WHERE bae.capacity > 300 AND baf.status LIKE 'Completed'
+WHERE baf.status LIKE 'Completed'
+GROUP BY flight_status, flight_segments;
+~~~~
+
+Output :
+| flight_status | flight_segments    | num_flights |
+| ------------- | ------------------ | ----------- |
+| Delayed       | Below or equal 300 | 16          |
+| Delayed       | Above 300          | 26          |
+| Not Delayed   | Below or equal 300 | 69          |
+| Not Delayed   | Above 300          | 131         |
