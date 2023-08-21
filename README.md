@@ -160,3 +160,24 @@ Output :
 | Delayed        | Kuala Lumpur   | 1           |
 | Delayed        | Aarhus         | 1           |
 | Delayed        | Lisbon         | 1           |
+
+
+### Question 6: It looks like we have found a potential area where delays are happening more frequently. You remember that there are some flights did not have any aircraft assigned in the data at the moment. Because of that, you would like to check whether the number of delays increases even more if we include these flights with missing aircraft assignment. What is the total number of delays of all completed flights per manufacturer that departed from London?
+~~~~sql
+SELECT
+	CASE WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'Y' THEN 'Delayed'
+      		--WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'N' THEN 'Not Delayed'
+      	END AS flights_status,
+      	baa.manufacturer,
+      	--bar.departure_city,
+      	COUNT(baf.flight_id) AS num_flights
+FROM ba_flights AS baf
+LEFT JOIN ba_flight_routes AS bar
+ON baf.flight_number = bar.flight_number
+LEFT JOIN ba_aircraft AS baa
+ON baf.flight_id = baa.flight_id
+WHERE baf.status = 'Completed' AND baf.delayed_flag = 'Y'
+	AND bar.departure_city LIKE 'London'
+GROUP BY baa.manufacturer, bar.departure_city, baf.status, baf.delayed_flag
+ORDER BY num_flights DESC;
+~~~~
