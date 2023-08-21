@@ -118,3 +118,45 @@ Output :
 | Not Delayed   | Above 300          | 131         |
 | Delayed       | Below or equal 300 | 16          |
 | Not Delayed   | Below or equal 300 | 69          |
+
+
+### Question 5: Your manager suggests to analyse whether specific locations are causing the delays. Are certain airports better organized than others? Let’s find out. What departure cities have experienced the highest number of delays in all the completed flights? Only include flights that operates with the manufacturers Boeing and Airbus.
+~~~~sql
+SELECT
+	CASE WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'Y' THEN 'Delayed'
+      		WHEN baf.status LIKE 'Completed' AND baf.delayed_flag LIKE 'N' THEN 'Not Delayed'
+	END AS flights_status,
+      	bar.departure_city,
+      	COUNT(baf.flight_id) AS num_flights
+FROM ba_flights AS baf
+LEFT JOIN ba_flight_routes AS bar
+ON baf.flight_number = bar.flight_number
+INNER JOIN ba_aircraft AS baa
+ON baf.flight_id = baa.flight_id
+WHERE baf.status = 'Completed' AND baf.delayed_flag = 'Y'
+	AND (baa.manufacturer = 'Boeing' OR baa.manufacturer = 'Airbus')
+GROUP BY bar.departure_city, baf.status, baf.delayed_flag
+ORDER BY num_flights DESC;
+~~~~
+
+Output :
+| flights_status | departure_city | num_flights |
+| -------------- | -------------- | ----------- |
+| Delayed        | London         | 11          |
+| Delayed        | Krakow         | 2           |
+| Delayed        | Nantes         | 2           |
+| Delayed        | Dammam         | 2           |
+| Delayed        | Basel          | 2           |
+| Delayed        | Aberdeen       | 2           |
+| Delayed        | Trondheim      | 2           |
+| Delayed        | Manila         | 1           |
+| Delayed        | Port of Spain  | 1           |
+| Delayed        | Stockholm      | 1           |
+| Delayed        | São Paulo      | 1           |
+| Delayed        | Linköping      | 1           |
+| Delayed        | Bergen         | 1           |
+| Delayed        | Dubai          | 1           |
+| Delayed        | Helsinki       | 1           |
+| Delayed        | Kuala Lumpur   | 1           |
+| Delayed        | Aarhus         | 1           |
+| Delayed        | Lisbon         | 1           |
