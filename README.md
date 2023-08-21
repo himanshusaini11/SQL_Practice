@@ -251,7 +251,7 @@ Output :
 | Boeing       | 73J        | 376            |
 
 
-### Question 3: Since only some aircraft are capable of flying long distances overseas, we want to filter out the planes that only do shorter distances. What aircraft (manufacturer and sub-type) have completed flights of a distance of more than 7,000 km? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+### Question 9: Since only some aircraft are capable of flying long distances overseas, we want to filter out the planes that only do shorter distances. What aircraft (manufacturer and sub-type) have completed flights of a distance of more than 7,000 km? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
 ~~~~sql
 SELECT
       DISTINCT baa.manufacturer,
