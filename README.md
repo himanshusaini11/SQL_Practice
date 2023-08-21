@@ -249,3 +249,30 @@ Output :
 | Boeing       | 295        | 373            |
 | Embraer      | E75        | 376            |
 | Boeing       | 73J        | 376            |
+
+
+### Question 3: Since only some aircraft are capable of flying long distances overseas, we want to filter out the planes that only do shorter distances. What aircraft (manufacturer and sub-type) have completed flights of a distance of more than 7,000 km? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+~~~~sql
+SELECT
+      DISTINCT baa.manufacturer,
+      baa.ac_subtype,
+      SUM(bar.distance_flown) AS distance_flown
+FROM ba_flights AS baf
+INNER JOIN ba_aircraft AS baa
+ON baa.flight_id = baf.flight_id
+INNER JOIN ba_flight_routes AS bar
+ON bar.flight_number = baf.flight_number
+WHERE baf.status = 'Completed'
+	AND bar.distance_flown > 7000
+GROUP BY baa.manufacturer, baa.ac_subtype;
+~~~~
+
+Output :
+| manufacturer | ac_subtype | distance_flown |
+| ------------ | ---------- | -------------- |
+| Airbus       | 332        | 19550          |
+| Boeing       | 295        | 17624          |
+| Boeing       | 73H        | 18587          |
+| Boeing       | 772        | 19102          |
+| Boeing       | 789        | 28757          |
+| Embraer      | E90        | 9775           |
