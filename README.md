@@ -361,3 +361,168 @@ Output :
 | Boeing       | 4472.67905248529  |
 | Embraer      | 9853.451706778491 |
 | Airbus       | 394688.612612313  |
+
+
+### Question 13: To get started with analysis, create a summary of how many short-haul versus long-haul flights happen. A typical short-haul flight in Europe has a maximum distance of 2,000 km. How many flights are scheduled or completed for both short-haul and long-haul flights in 2023?
+~~~~sql
+SELECT
+	CASE WHEN bar.distance_flown <= 2000 THEN 'short_haul'
+  ELSE 'long_haul' END AS haul_category,
+  COUNT(baf.flight_id) AS num_flight
+FROM ba_flights AS baf
+	INNER JOIN ba_flight_routes AS bar
+		ON bar.flight_number = baf.flight_number
+WHERE baf.status IN ('Completed', 'Scheduled')
+	AND EXTRACT(YEAR FROM baf.actual_flight_date) = 2023
+GROUP BY haul_category;
+~~~~
+
+Output :
+| haul_category | num_flight |
+| ------------- | ---------- |
+| long_haul     | 118        |
+| short_haul    | 536        |
+
+### Question 14: We can calculate how full flights were by comparing the number of passengers on the flight against the capacity of the aircraft. Calculate the average number of empty seats for the short-haul and long-haul flights. Additionally, can you also calculate the average number of empty seats as a percentage of the maximum number of passengers? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+~~~~sql
+SELECT
+	CASE WHEN bar.distance_flown <= 2000 THEN 'short_haul'
+  	ELSE 'long_haul' END AS haul_category,
+	AVG(bae.capacity - baf.total_passengers) AS avg_empty_seats,
+  AVG((bae.capacity - baf.total_passengers)/bae.capacity) AS avg_empty_seats_perc
+FROM ba_flights AS baf
+	INNER JOIN ba_aircraft AS baa
+  	ON baa.flight_id = baf.flight_id
+  INNER JOIN ba_flight_routes AS bar
+  	ON bar.flight_number = baf.flight_number
+  INNER JOIN ba_fuel_efficiency AS bae
+  	ON bae.ac_subtype = baa.ac_subtype
+GROUP BY haul_category;
+~~~~
+
+Output :
+| haul_category | avg_empty_seats      | avg_empty_seats_perc   |
+| ------------- | -------------------- | ---------------------- |
+| short_haul    | 222.6193265007320644 | 0.09809663250366032211 |
+| long_haul     | 229.2105263157894737 | 0.09210526315789473684 |
+
+
+### Question 15: Calculate the total number of scheduled flights used with more than 100 empty seats in the plane. Split the flights by short-haul and long-haul flights. Exclude the flights where the manufacturer and sub-type are not available
+~~~~sql
+SELECT
+	CASE WHEN bar.distance_flown <= 2000 THEN 'short_haul'
+  	ELSE 'long_haul' END AS haul_category,
+  COUNT(baf.flight_id) AS num_flights
+FROM ba_flights AS baf
+  LEFT JOIN ba_aircraft AS baa
+  	ON baa.flight_id = baf.flight_id
+  INNER JOIN ba_flight_routes AS bar
+  	ON bar.flight_number = baf.flight_number
+  INNER JOIN ba_fuel_efficiency AS bae
+  	ON bae.ac_subtype = baa.ac_subtype
+WHERE bae.capacity - baf.total_passengers > 100
+	AND baf.status = 'Scheduled'
+GROUP BY haul_category;
+~~~~
+
+Output :
+| haul_category | num_flights |
+| ------------- | ----------- |
+| short_haul    | 186         |
+| long_haul     | 45          |
+
+
+### Question 16: What short-haul flight routes that have been completed have the highest average number of empty seats? Include the flight number, departure city, arrival city, number of completed flights, and average empty seats in your results. Make sure to include all flights that are available in the data even if the capacity information for some flights might be missing.
+~~~~sql
+SELECT
+	baf.flight_number,
+  bar.departure_city,
+  bar.arrival_city,
+  COUNT(baf.flight_id) AS num_flights_completed,
+	AVG(bae.capacity - baf.total_passengers) AS avg_empty_seats
+FROM ba_flights AS baf
+	LEFT JOIN ba_aircraft AS baa
+  	ON baa.flight_id = baf.flight_id
+  LEFT JOIN ba_flight_routes AS bar
+  	ON bar.flight_number = baf.flight_number
+  LEFT JOIN ba_fuel_efficiency AS bae
+  	ON bae.ac_subtype = baa.ac_subtype
+WHERE bar.distance_flown <=2000
+	AND baf.status = 'Completed'
+ GROUP BY
+ 	baf.flight_number,
+  bar.departure_city,
+  bar.arrival_city
+ORDER BY avg_empty_seats DESC;
+~~~~
+
+Output :
+| flight_number | departure_city | arrival_city | num_flights_completed | avg_empty_seats      |
+| ------------- | -------------- | ------------ | --------------------- | -------------------- |
+| BA1997        | Lisbon         | London       | 1                     |                      |
+| BA1752        | London         | Humberside   | 1                     | 550.0000000000000000 |
+| BA2002        | London         | Lisbon       | 4                     | 460.0000000000000000 |
+| BA1753        | Humberside     | London       | 2                     | 440.0000000000000000 |
+| BA1730        | Aarhus         | London       | 3                     | 429.6666666666666667 |
+| BA2000        | London         | Lisbon       | 3                     | 347.5000000000000000 |
+| BA1377        | London         | Helsinki     | 1                     | 330.0000000000000000 |
+| BA1371        | Gothenburg     | London       | 3                     | 322.3333333333333333 |
+| BA1706        | Aberdeen       | London       | 2                     | 321.0000000000000000 |
+| BA1538        | London         | Toulouse     | 3                     | 319.3333333333333333 |
+| BA2359        | London         | Krakow       | 2                     | 316.5000000000000000 |
+| BA933         | Port of Spain  | London       | 2                     | 315.0000000000000000 |
+| BA1381        | Helsinki       | London       | 6                     | 311.6000000000000000 |
+| BA1744        | Glasgow        | London       | 2                     | 305.0000000000000000 |
+| BA631         | Kuala Lumpur   | Jakarta      | 2                     | 303.5000000000000000 |
+| BA2342        | London         | Basel        | 7                     | 296.8000000000000000 |
+| BA2006        | Madrid         | London       | 3                     | 290.0000000000000000 |
+| BA2008        | Madrid         | London       | 2                     | 286.0000000000000000 |
+| BA1394        | London         | Linköping    | 4                     | 280.7500000000000000 |
+| BA1748        | London         | Glasgow      | 2                     | 280.0000000000000000 |
+| BA2005        | London         | Madrid       | 3                     | 279.0000000000000000 |
+| BA1390        | Linköping      | London       | 8                     | 277.2500000000000000 |
+| BA1388        | Trondheim      | London       | 7                     | 272.6000000000000000 |
+| BA1716        | Nantes         | London       | 3                     | 268.5000000000000000 |
+| BA1534        | Toulouse       | London       | 5                     | 267.6666666666666667 |
+| BA1382        | London         | Helsinki     | 7                     | 264.8000000000000000 |
+| BA1374        | Helsinki       | London       | 5                     | 258.6000000000000000 |
+| BA1729        | London         | Aarhus       | 9                     | 257.2500000000000000 |
+| BA1723        | Nantes         | London       | 3                     | 254.0000000000000000 |
+| BA1517        | Edinburgh      | London       | 4                     | 249.5000000000000000 |
+| BA1397        | Bergen         | London       | 4                     | 246.2500000000000000 |
+| BA1787        | Norwich        | London       | 5                     | 231.0000000000000000 |
+| BA1762        | London         | Humberside   | 3                     | 230.5000000000000000 |
+| BA2004        | Madrid         | London       | 3                     | 228.5000000000000000 |
+| BA1707        | London         | Aberdeen     | 6                     | 224.6666666666666667 |
+| BA1310        | Stockholm      | London       | 2                     | 220.0000000000000000 |
+| BA1444        | Paris          | London       | 3                     | 208.0000000000000000 |
+| BA1379        | London         | Helsinki     | 5                     | 207.5000000000000000 |
+| BA2351        | Krakow         | London       | 2                     | 206.0000000000000000 |
+| BA922         | Kralendijk     | London       | 6                     | 200.0000000000000000 |
+| BA2007        | London         | Madrid       | 5                     | 198.8000000000000000 |
+| BA2338        | London         | Budapest     | 3                     | 195.5000000000000000 |
+| BA907         | Oranjestad     | Kralendijk   | 5                     | 192.2000000000000000 |
+| BA1700        | London         | Aberdeen     | 4                     | 191.3333333333333333 |
+| BA544         | Muscat         | Kuwait City  | 3                     | 181.0000000000000000 |
+| BA893         | Quito          | Guayaquil    | 2                     | 178.5000000000000000 |
+| BA2355        | Krakow         | London       | 5                     | 178.0000000000000000 |
+| BA1702        | Aberdeen       | London       | 3                     | 173.0000000000000000 |
+| BA1516        | London         | Edinburgh    | 6                     | 168.0000000000000000 |
+| BA1775        | Valencia       | London       | 4                     | 167.5000000000000000 |
+| BA2341        | Basel          | London       | 7                     | 164.4000000000000000 |
+| BA1398        | London         | Bergen       | 6                     | 148.2500000000000000 |
+| BA1526        | London         | Edinburgh    | 5                     | 144.7500000000000000 |
+| BA1712        | London         | Aberdeen     | 2                     | 127.0000000000000000 |
+| BA1771        | London         | Valencia     | 2                     | 125.5000000000000000 |
+| BA1738        | London         | Glasgow      | 6                     | 107.8000000000000000 |
+| BA2349        | London         | Basel        | 2                     | 107.0000000000000000 |
+| BA2343        | Basel          | London       | 3                     | 92.6666666666666667  |
+| BA1705        | London         | Aberdeen     | 2                     | 92.0000000000000000  |
+| BA1709        | Aberdeen       | London       | 3                     | 89.3333333333333333  |
+| BA721         | Kigali         | Kampala      | 3                     | 79.0000000000000000  |
+| BA1510        | Edinburgh      | London       | 2                     | 51.5000000000000000  |
+| BA1739        | Glasgow        | London       | 4                     | 48.3333333333333333  |
+| BA2001        | Lisbon         | London       | 6                     | 48.2500000000000000  |
+| BA1378        | Helsinki       | London       | 2                     | 33.0000000000000000  |
+| BA1399        | Bergen         | London       | 2                     | 7.0000000000000000   |
+| BA1774        | London         | Valencia     | 2                     | 6.0000000000000000   |
