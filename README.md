@@ -278,7 +278,7 @@ Output :
 | Embraer      | E90        | 9775           |
 
 
-### Question 4: What is the most used aircraft (manufacturer and sub-type) for flights departing from London and arriving in Basel, Trondheim, or Glasgow? Include the number of flights that the aircraft was used for. If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+### Question 10: What is the most used aircraft (manufacturer and sub-type) for flights departing from London and arriving in Basel, Trondheim, or Glasgow? Include the number of flights that the aircraft was used for. If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
 ~~~~sql
 SELECT
       baa.ac_subtype,
@@ -302,7 +302,7 @@ Output :
 | 295        | Boeing       | 9             |
 
 
-### Question 5: For the flight routes highlighted in question 4 combined, would there have been an aircraft that, on average, would use less fuel on the flight routes? The fuel used in liters per flight can be calculated by multiplying the fuel efficiency metric by distance, baggage weight, and number of passengers. What aircraft (manufacturer and sub-type) would you recommend to use for each of these flight routes if you use the average fuel consumption as your guiding metric? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+### Question 11: For the flight routes highlighted in question 4 combined, would there have been an aircraft that, on average, would use less fuel on the flight routes? The fuel used in liters per flight can be calculated by multiplying the fuel efficiency metric by distance, baggage weight, and number of passengers. What aircraft (manufacturer and sub-type) would you recommend to use for each of these flight routes if you use the average fuel consumption as your guiding metric? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
 ~~~sql
 SELECT
       baa.ac_subtype,
@@ -333,3 +333,31 @@ Output :
 | E90        | Embraer      | 10156384.79437725  |
 | E75        | Embraer      | 16032613.238630371 |
 | 332        | Airbus       | 270770299.2574519  |
+
+
+### Question 12: The fuel used in liters per flight can be calculated by multiplying the fuel efficiency metric by distance, baggage weight, and number of passengers. Calculate the total amount of fuel used per kilometer flown of completed flights per manufacturer. What manufacturer has used less fuel per km in total? If flights do not have data available about the aircraft type, you can exclude the flights from the analysis
+~~~~sql
+SELECT
+  baa.manufacturer,
+  SUM(
+    bae.fuel_efficiency * bar.distance_flown * baf.baggage_weight * baf.total_passengers
+  ) / SUM(bar.distance_flown) AS fuel_avg_per_km
+FROM
+  ba_flights AS baf
+  LEFT JOIN ba_flight_routes AS bar ON bar.flight_number = baf.flight_number
+  INNER JOIN ba_aircraft AS baa ON baa.flight_id = baf.flight_id
+  INNER JOIN ba_fuel_efficiency AS bae ON bae.ac_subtype = baa.ac_subtype
+WHERE
+  baf.status = 'Completed'
+GROUP BY
+  baa.manufacturer
+ORDER BY
+  fuel_avg_per_km;
+~~~~
+
+Output :
+| manufacturer | fuel_avg_per_km   |
+| ------------ | ----------------- |
+| Boeing       | 4472.67905248529  |
+| Embraer      | 9853.451706778491 |
+| Airbus       | 394688.612612313  |
