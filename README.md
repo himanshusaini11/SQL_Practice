@@ -106,8 +106,6 @@ LEFT JOIN ba_aircraft AS baa
 ON baf.flight_id = baa.flight_id
 INNER JOIN ba_fuel_efficiency AS bae
 ON baa.ac_subtype = bae.ac_subtype
-
---WHERE bae.capacity > 300 AND baf.status LIKE 'Completed'
 WHERE baf.status LIKE 'Completed'
 GROUP BY flight_status, flight_segments;
 ~~~~
