@@ -276,3 +276,27 @@ Output :
 | Boeing       | 772        | 19102          |
 | Boeing       | 789        | 28757          |
 | Embraer      | E90        | 9775           |
+
+
+### Question 4: What is the most used aircraft (manufacturer and sub-type) for flights departing from London and arriving in Basel, Trondheim, or Glasgow? Include the number of flights that the aircraft was used for. If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+~~~~sql
+SELECT
+      baa.ac_subtype,
+      baa.manufacturer,
+      COUNT(baf.flight_id) AS num_aircrafts
+FROM ba_flights AS baf
+LEFT JOIN ba_flight_routes AS bar
+ON bar.flight_number = baf.flight_number
+INNER JOIN ba_aircraft AS baa
+ON baa.flight_id = baf.flight_id
+WHERE bar.departure_city LIKE 'London'
+	AND bar.arrival_city IN ('Basel', 'Trondheim', 'Glasgow')
+GROUP BY baa.ac_subtype, baa.manufacturer
+ORDER BY num_aircrafts DESC
+LIMIT 1;
+~~~~
+
+Output :
+| ac_subtype | manufacturer | num_aircrafts |
+| ---------- | ------------ | ------------- |
+| 295        | Boeing       | 9             |
