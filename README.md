@@ -189,3 +189,35 @@ Output :
 | Delayed        |              | 5           |
 | Delayed        | Embraer      | 3           |
 | Delayed        | Airbus       | 2           |
+
+
+### Question 7: Create a list of flights, showing the flight ID, departure city, arrival city, manufacturer, and aircraft sub-type that will be used for each flight. Show the results for all flights that are available even if not all information is available for all flights.
+~~~sql
+SELECT
+	baf.flight_id,
+      	bar.departure_city,
+      	bar.arrival_city,
+      	baa.manufacturer,
+      	baa.ac_subtype
+FROM ba_flights AS baf
+LEFT JOIN ba_flight_routes AS bar
+ON baf.flight_number = bar.flight_number
+
+LEFT JOIN ba_aircraft AS baa
+ON baf.flight_id = baa.flight_id
+LIMIT 10; -- To get the required answer remove the ```LIMIT```. I used just to show the output.
+~~~
+
+Output :
+| flight_id | departure_city | arrival_city | manufacturer | ac_subtype |
+| --------- | -------------- | ------------ | ------------ | ---------- |
+| AAAA01    | Stockholm      | London       | Boeing       | 73H        |
+| AAAA02    | London         | Riyadh       |              |            |
+| AAAA03    | London         | Riyadh       |              |            |
+| AAAA04    | Dammam         | London       |              |            |
+| AAAA05    | London         | Dubai        |              |            |
+| AAAA06    | Dubai          | London       |              |            |
+| AAAA07    | Dubai          | London       | Airbus       | 332        |
+| AAAA08    | London         | Kuwait City  | Airbus       | 332        |
+| AAAA09    | London         | Kuwait City  | Airbus       | 332        |
+| AAAA10    | Muscat         | Kuwait City  | Airbus       | 332        |
