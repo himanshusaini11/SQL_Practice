@@ -107,13 +107,14 @@ ON baf.flight_id = baa.flight_id
 INNER JOIN ba_fuel_efficiency AS bae
 ON baa.ac_subtype = bae.ac_subtype
 WHERE baf.status LIKE 'Completed'
-GROUP BY flight_status, flight_segments;
+GROUP BY flight_status, flight_segments
+ORDER BY flight_segments;
 ~~~~
 
 Output :
 | flight_status | flight_segments    | num_flights |
 | ------------- | ------------------ | ----------- |
-| Delayed       | Below or equal 300 | 16          |
 | Delayed       | Above 300          | 26          |
-| Not Delayed   | Below or equal 300 | 69          |
 | Not Delayed   | Above 300          | 131         |
+| Delayed       | Below or equal 300 | 16          |
+| Not Delayed   | Below or equal 300 | 69          |
