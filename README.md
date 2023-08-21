@@ -300,3 +300,36 @@ Output :
 | ac_subtype | manufacturer | num_aircrafts |
 | ---------- | ------------ | ------------- |
 | 295        | Boeing       | 9             |
+
+
+### Question 5: For the flight routes highlighted in question 4 combined, would there have been an aircraft that, on average, would use less fuel on the flight routes? The fuel used in liters per flight can be calculated by multiplying the fuel efficiency metric by distance, baggage weight, and number of passengers. What aircraft (manufacturer and sub-type) would you recommend to use for each of these flight routes if you use the average fuel consumption as your guiding metric? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+~~~sql
+SELECT
+      baa.ac_subtype,
+      baa.manufacturer,
+      AVG(bae.fuel_efficiency * bar.distance_flown * baf.baggage_weight * baf.total_passengers) AS fuel_avg
+FROM ba_flights AS baf
+LEFT JOIN ba_flight_routes AS bar
+ON bar.flight_number = baf.flight_number
+INNER JOIN ba_aircraft AS baa
+ON baa.flight_id = baf.flight_id
+INNER JOIN ba_fuel_efficiency AS bae
+ON bae.ac_subtype = baa.ac_subtype
+WHERE bar.departure_city LIKE 'London'
+	AND bar.arrival_city IN ('Basel', 'Trondheim', 'Glasgow')
+GROUP BY baa.ac_subtype, baa.manufacturer
+ORDER BY fuel_avg;
+~~~~
+
+Output :
+| ac_subtype | manufacturer | fuel_avg           |
+| ---------- | ------------ | ------------------ |
+| 772        | Boeing       | 2294069.9296594504 |
+| 73J        | Boeing       | 3186193.86556758   |
+| 789        | Boeing       | 3350866.3948811316 |
+| 295        | Boeing       | 4209148.12909342   |
+| 73W        | Boeing       | 5989304.848672802  |
+| 73H        | Boeing       | 7874115.00743448   |
+| E90        | Embraer      | 10156384.79437725  |
+| E75        | Embraer      | 16032613.238630371 |
+| 332        | Airbus       | 270770299.2574519  |
