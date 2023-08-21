@@ -526,3 +526,107 @@ Output :
 | BA1378        | Helsinki       | London       | 2                     | 33.0000000000000000  |
 | BA1399        | Bergen         | London       | 2                     | 7.0000000000000000   |
 | BA1774        | London         | Valencia     | 2                     | 6.0000000000000000   |
+
+
+### Question 17: What are the short-haul flight routes and the average number of seats for short-haul flight routes that only have been completed 2 or fewer times? Include the flight number, departure city, arrival city, and average empty seats in your results. Make sure to include all flights that are available in the data even if the capacity information for some flights might be missing.
+
+~~~~sql
+SELECT
+	baf.flight_number,
+  bar.departure_city,
+  bar.arrival_city,
+	AVG(bae.capacity - baf.total_passengers) AS avg_empty_seats
+FROM ba_flights AS baf
+	LEFT JOIN ba_aircraft AS baa
+  	ON baa.flight_id = baf.flight_id
+  LEFT JOIN ba_flight_routes AS bar
+  	ON bar.flight_number = baf.flight_number
+  LEFT JOIN ba_fuel_efficiency AS bae
+  	ON bae.ac_subtype = baa.ac_subtype
+WHERE bar.distance_flown <=2000
+	AND baf.status = 'Completed'
+GROUP BY
+ 	baf.flight_number,
+  bar.departure_city,
+  bar.arrival_city
+HAVING COUNT(baf.flight_id) <= 2
+ORDER BY avg_empty_seats DESC;
+~~~~
+
+Output :
+| flight_number | departure_city | arrival_city | avg_empty_seats      |
+| ------------- | -------------- | ------------ | -------------------- |
+| BA1997        | Lisbon         | London       |                      |
+| BA1752        | London         | Humberside   | 550.0000000000000000 |
+| BA1753        | Humberside     | London       | 440.0000000000000000 |
+| BA1377        | London         | Helsinki     | 330.0000000000000000 |
+| BA1706        | Aberdeen       | London       | 321.0000000000000000 |
+| BA2359        | London         | Krakow       | 316.5000000000000000 |
+| BA933         | Port of Spain  | London       | 315.0000000000000000 |
+| BA1744        | Glasgow        | London       | 305.0000000000000000 |
+| BA631         | Kuala Lumpur   | Jakarta      | 303.5000000000000000 |
+| BA2008        | Madrid         | London       | 286.0000000000000000 |
+| BA1748        | London         | Glasgow      | 280.0000000000000000 |
+| BA1310        | Stockholm      | London       | 220.0000000000000000 |
+| BA2351        | Krakow         | London       | 206.0000000000000000 |
+| BA893         | Quito          | Guayaquil    | 178.5000000000000000 |
+| BA1712        | London         | Aberdeen     | 127.0000000000000000 |
+| BA1771        | London         | Valencia     | 125.5000000000000000 |
+| BA2349        | London         | Basel        | 107.0000000000000000 |
+| BA1705        | London         | Aberdeen     | 92.0000000000000000  |
+| BA1510        | Edinburgh      | London       | 51.5000000000000000  |
+| BA1378        | Helsinki       | London       | 33.0000000000000000  |
+| BA1399        | Bergen         | London       | 7.0000000000000000   |
+| BA1774        | London         | Valencia     | 6.0000000000000000   |
+
+
+### Question 18: What are the short-haul flight routes and the average number of seats for short-haul flight routes that only have been completed 2 or fewer times that either depart or arrive in London? Include the flight number, departure city, arrival city, and average empty seats in your results. Make sure to include all flights that are available in the data even if the capacity information for some flights might be missing.
+
+~~~sql
+SELECT
+	baf.flight_number,
+  bar.departure_city,
+  bar.arrival_city,
+	AVG(bae.capacity - baf.total_passengers) AS avg_empty_seats
+FROM ba_flights AS baf
+	LEFT JOIN ba_aircraft AS baa
+  	ON baa.flight_id = baf.flight_id
+  LEFT JOIN ba_flight_routes AS bar
+  	ON bar.flight_number = baf.flight_number
+  LEFT JOIN ba_fuel_efficiency AS bae
+  	ON bae.ac_subtype = baa.ac_subtype
+WHERE bar.distance_flown <=2000
+	AND baf.status = 'Completed'
+  AND (bar.departure_city = 'London'
+  	OR bar.arrival_city = 'London')
+GROUP BY
+ 	baf.flight_number,
+  bar.departure_city,
+  bar.arrival_city
+HAVING COUNT(baf.flight_id) <= 2
+ORDER BY avg_empty_seats DESC;
+~~~
+
+Output :
+| flight_number | departure_city | arrival_city | avg_empty_seats      |
+| ------------- | -------------- | ------------ | -------------------- |
+| BA1997        | Lisbon         | London       |                      |
+| BA1752        | London         | Humberside   | 550.0000000000000000 |
+| BA1753        | Humberside     | London       | 440.0000000000000000 |
+| BA1377        | London         | Helsinki     | 330.0000000000000000 |
+| BA1706        | Aberdeen       | London       | 321.0000000000000000 |
+| BA2359        | London         | Krakow       | 316.5000000000000000 |
+| BA933         | Port of Spain  | London       | 315.0000000000000000 |
+| BA1744        | Glasgow        | London       | 305.0000000000000000 |
+| BA2008        | Madrid         | London       | 286.0000000000000000 |
+| BA1748        | London         | Glasgow      | 280.0000000000000000 |
+| BA1310        | Stockholm      | London       | 220.0000000000000000 |
+| BA2351        | Krakow         | London       | 206.0000000000000000 |
+| BA1712        | London         | Aberdeen     | 127.0000000000000000 |
+| BA1771        | London         | Valencia     | 125.5000000000000000 |
+| BA2349        | London         | Basel        | 107.0000000000000000 |
+| BA1705        | London         | Aberdeen     | 92.0000000000000000  |
+| BA1510        | Edinburgh      | London       | 51.5000000000000000  |
+| BA1378        | Helsinki       | London       | 33.0000000000000000  |
+| BA1399        | Bergen         | London       | 7.0000000000000000   |
+| BA1774        | London         | Valencia     | 6.0000000000000000   |
