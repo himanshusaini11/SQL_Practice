@@ -221,3 +221,31 @@ Output :
 | AAAA08    | London         | Kuwait City  | Airbus       | 332        |
 | AAAA09    | London         | Kuwait City  | Airbus       | 332        |
 | AAAA10    | Muscat         | Kuwait City  | Airbus       | 332        |
+
+
+### Question 8: What is the maximum number of passengers that have been on every available aircraft (manufacturer and sub-type) for flights that have been completed? If the manufacturer and sub-type are not available for flights, we do not need to show the results of these flights.
+~~~~sql
+SELECT
+      baa.manufacturer,
+      baa.ac_subtype,
+      MAX(baf.total_passengers) AS max_passengers
+FROM ba_flights AS baf
+INNER JOIN ba_aircraft AS baa
+ON baa.flight_id = baf.flight_id
+WHERE baf.status = 'Completed'
+GROUP BY baa.manufacturer, baa.ac_subtype
+ORDER BY max_passengers;
+~~~~
+
+Output :
+| manufacturer | ac_subtype | max_passengers |
+| ------------ | ---------- | -------------- |
+| Boeing       | 73W        | 264            |
+| Boeing       | 789        | 264            |
+| Embraer      | E90        | 277            |
+| Boeing       | 73H        | 326            |
+| Boeing       | 772        | 373            |
+| Airbus       | 332        | 373            |
+| Boeing       | 295        | 373            |
+| Embraer      | E75        | 376            |
+| Boeing       | 73J        | 376            |
