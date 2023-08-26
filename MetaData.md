@@ -16,5 +16,20 @@ SELECT
   AVG(annual_revenue) AS avg_annual_rev_per_sector
 FROM meta_clients
 WHERE LOWER(sector) IN ('insurance', 'banking')
-GROUP BY sector;
+GROUP BY UPPER(sector);
 ~~~~
+
+Output :
+| sector    | avg_annual_rev_per_sector |
+| --------- | ------------------------- |
+| BANKING   | 1364.0833333333333        |
+| INSURANCE | 355.4166666666667         |
+
+
+### Question 2: Humberto wants to analyze the marketing spend percentage by country, but the data is not 100% clean. He mentions that you can clean the country field by using the sales team information, and shared the following mapping with you: 
+UK = United Kingdom
+FR = France
+ES = Spain
+IT = Italy
+DACH = Germany
+What is the average marketing spend percentage per country?
