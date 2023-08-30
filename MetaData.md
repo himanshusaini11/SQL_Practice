@@ -27,9 +27,27 @@ Output :
 
 
 ### Question 2: Humberto wants to analyze the marketing spend percentage by country, but the data is not 100% clean. He mentions that you can clean the country field by using the sales team information, and shared the following mapping with you: 
-UK = United Kingdom
-FR = France
-ES = Spain
-IT = Italy
-DACH = Germany
-What is the average marketing spend percentage per country?
+### UK = United Kingdom
+### FR = France
+### ES = Spain
+### IT = Italy
+### DACH = Germany
+### What is the average marketing spend percentage per country?
+~~~sql
+SELECT
+  CASE
+  	WHEN mc.country IS NULL THEN (
+      CASE
+      	WHEN mc.sales_team LIKE ('%UK%') THEN 'United Kingdom'
+      	WHEN mc.sales_team LIKE ('%FR%') THEN 'France'
+    		WHEN mc.sales_team LIKE ('%ES%') THEN 'Spain'
+    		WHEN mc.sales_team LIKE ('%IT%') THEN 'Italy'
+    		WHEN mc.sales_team LIKE ('%DACH%') THEN 'Germany'
+      END
+      )
+    ELSE mc.country
+	END AS upd_country,
+  AVG(mc.marketing_spend_perc) AS avg_marketing_spend_perc
+FROM meta_clients AS mc
+GROUP BY mc.sales_team, upd_country;
+~~~
