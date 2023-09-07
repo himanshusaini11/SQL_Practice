@@ -102,3 +102,70 @@ OUTPUT :
 | Spain                | 1401.75               | 376.6474264808529  |
 | United Arab Emirates | 1067.92               | 103.81707620357703 |
 | United Kingdom       | 1459.5                | 373.9303546519519  |
+
+
+#### Question 4: Create a client list and calculate the customer penetration % for clients in 2022 with an industry that matches consumer goods. The customer penetration can be calculated as follows: Meta revenue generated in one year divided by the marketing spend $ (from question 3) Show the clients with the lowest customer penetration first.
+~~~~sql
+SELECT
+	mc.client_id,
+	SUM(mr.revenue) / (MAX(mc.annual_revenue) * MAX(mc.marketing_spend_perc)) AS customer_pen
+FROM meta_clients AS mc
+INNER JOIN meta_revenue AS mr
+	ON mr.client_id = mc.client_id
+WHERE EXTRACT(YEAR FROM mr.dates) = 2022
+	AND LOWER(mc.industry) LIKE ('%consumer goods%')
+GROUP BY 1
+ORDER BY 2;
+~~~~
+
+OUTPUT : (only first 10)
+| client_id    | customer_pen         |
+| ------------ | -------------------- |
+| Client_1113  | 0.04750176073079562  |
+| Client_9300  | 0.04927633646530191  |
+| Client_37182 | 0.04954280803212278  |
+| Client_31146 | 0.05082922457932033  |
+| Client_2184  | 0.05999106397673829  |
+| Client_2392  | 0.060028318241414504 |
+| Client_7284  | 0.06400184536675155  |
+| Client_4202  | 0.06903365387113054  |
+| Client_32152 | 0.069997505298207    |
+| Client_29128 | 0.07426794337815998  |
+...
+...
+...
+
+
+### Question 5: Humberto is looking to compare the customer penetration between the Financial Services and Retail & Consumer Goods industries. However, he knows that the industry data is a mess. Can you clean up the industry data and calculate the customer penetration for each industry based on the Meta revenue data from 2022? The following values should fall under Retail & Consumer Goods: retail, Retail, Consumer Goods, RCG, Retail & Consumer Goods.
+~~~~sql
+WITH tab_clean_ind AS(
+  SELECT
+  	client_id,
+  	CASE
+  		WHEN LOWER(industry) IN ('retail', 'consumer goods', 'rcg', 'retail %')
+  			OR TRIM(LOWER(industry)) IN ('retail', 'consumer goods', 'rcg', 'retail %') THEN 'Retail & Consumer Goods'
+    	WHEN LOWER(industry) IN ('financial services', 'finance') THEN 'Financial Services'
+    	ELSE industry
+    END AS clean_industry
+	FROM meta_clients
+  
+  )
+SELECT
+	tci.clean_industry AS industry,
+  SUM(mr.revenue) / (MAX(mc.annual_revenue) * MAX(mc.marketing_spend_perc)) AS customer_pen
+FROM tab_clean_ind AS tci
+LEFT JOIN meta_clients AS mc
+	ON mc.client_id = tci.client_id
+LEFT JOIN meta_revenue AS mr
+	ON mr.client_id = mc.client_id
+WHERE EXTRACT(YEAR FROM mr.dates) = 2022
+GROUP BY clean_industry
+ORDER BY customer_pen;
+~~~~
+
+OUTPUT :
+| industry                           | customer_pen        |
+| ---------------------------------- | ------------------- |
+| Financial Services                 | 0.25620442250904635 |
+| Manufacturing, Automotive & Energy | 0.3082337699109349  |
+| Retail & Consumer Goods            | 0.7988291943126902  |
