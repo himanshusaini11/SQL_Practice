@@ -52,4 +52,18 @@ Output:
 | 48943                 |
 
 
-### Question 4: 
+### Question 4: How many users were in the control and treatment groups?
+~~~~sql
+SELECT
+	grp.group,
+	COUNT(grp.uid) AS num_usr_in_experiment
+FROM groups AS grp
+GROUP BY 1;
+~~~~
+
+Output:
+
+| group | num_usr_in_experiment |
+| ----- | --------------------- |
+| A     | 24343                 |
+| B     | 24600                 |
