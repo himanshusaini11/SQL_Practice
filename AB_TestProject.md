@@ -23,4 +23,18 @@ Output :
 | 139                          |
 
 
-### Question 2: 
+### Question 2: What are the start and end dates of the experiment?
+~~~~sql
+SELECT
+	MIN(grp.join_dt) AS start_date,
+  MAX(grp.join_dt) AS end_date
+FROM groups AS grp;
+~~~~
+
+Output: 
+| start_date | end_date   |
+| ---------- | ---------- |
+| 2023-01-25 | 2023-02-06 |
+
+
+### Question 3: 
