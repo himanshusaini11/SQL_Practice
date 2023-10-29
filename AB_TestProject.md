@@ -67,3 +67,29 @@ Output:
 | ----- | --------------------- |
 | A     | 24343                 |
 | B     | 24600                 |
+
+
+### Question 5: What was the conversion rate of all users?
+~~~~sql
+WITH UserConversion AS (  
+  SELECT
+    CASE
+      WHEN act.spent > 0 THEN 1
+      ELSE 0
+    END AS usr_conversion
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  GROUP BY usr.id, act.spent
+)
+
+SELECT
+  (SUM(uc.usr_conversion)::numeric/COUNT(uc.usr_conversion)::numeric)*100 AS usr_conversion_rate
+FROM UserConversion AS uc;
+~~~~
+
+Output:
+
+| usr_conversion_rate    |
+| ---------------------- |
+| 4.54952935903182429400 |
