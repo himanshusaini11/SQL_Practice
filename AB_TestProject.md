@@ -132,3 +132,42 @@ Output :
 
 
 ### Question 7: What is the average amount spent per user for the control and treatment groups, including users who did not convert?
+~~~~sql
+WITH AvgSpent AS (
+  SELECT
+    usr.id,
+    --act.uid,
+    --grp.uid,
+    grp.group,
+    SUM(act.spent)::NUMERIC AS usr_spent
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  LEFT JOIN groups AS grp
+    ON grp.uid = usr.id
+  --WHERE act.uid IS NOT NULL
+  GROUP BY 1,2--,3,4
+  ORDER BY 1
+)
+
+SELECT
+	--avs.group,
+  CASE
+  	WHEN avs.group = 'A' THEN 'Control Group'
+    WHEN avs.group = 'B' THEN 'Treatment Group'
+    ELSE 'Unknown'
+  END AS usr_group,
+	AVG(avs.usr_spent) AS avg_usr_spent
+FROM AvgSpent AS avs
+GROUP BY 1;
+~~~~
+
+Outpuy :
+
+| usr_group       | avg_usr_spent        |
+| --------------- | -------------------- |
+| Control Group   | 86.0166524238657396  |
+| Treatment Group | 73.23558109639180705 |
+
+
+### Question 8: 
