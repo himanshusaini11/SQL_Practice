@@ -32,9 +32,24 @@ FROM groups AS grp;
 ~~~~
 
 Output: 
+
 | start_date | end_date   |
 | ---------- | ---------- |
 | 2023-01-25 | 2023-02-06 |
 
 
-### Question 3: 
+### Question 3: How many total users were in the experiment?
+~~~~sql
+SELECT
+	COUNT(grp.uid) AS num_usr_in_experiment
+FROM groups AS grp;
+~~~~
+
+Output:
+
+| num_usr_in_experiment |
+| --------------------- |
+| 48943                 |
+
+
+### Question 4: 
