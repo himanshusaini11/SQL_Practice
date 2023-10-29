@@ -287,3 +287,40 @@ Output :
 
 --------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
+
+
+#### Extracting the Analysis Dataset
+
+### Question : Write a SQL query that returns: the user ID, the user’s country, the user’s gender, the user’s device type, the user’s test group, whether or not they converted (spent > $0), and how much they spent in total ($0+).
+~~~~sql
+SELECT
+	usr.id AS user_id,
+  COALESCE(usr.country, 'Unknown') AS user_country,
+  COALESCE(usr.gender, 'Unknown') AS user_gender,
+  COALESCE(grp.device, 'Unknown') AS user_device_type,
+  COALESCE(grp.group, 'Unknown') AS user_test_group,
+  CASE
+  	WHEN act.spent > 0 THEN 1
+    ELSE 0
+  END AS user_conv,
+  SUM(COALESCE(act.spent, 0))::NUMERIC
+FROM users AS usr
+LEFT JOIN groups AS grp
+	ON grp.uid = usr.id
+LEFT JOIN activity AS act
+	ON act.uid = usr.id
+GROUP BY usr.id,grp.device,grp.group,act.spent
+ORDER BY usr.id;
+~~~~
+
+Output :
+| user_id | user_country | user_gender | user_device_type | user_test_group | user_conv | sum |
+| ------- | ------------ | ----------- | ---------------- | --------------- | --------- | --- |
+| 1000000 | CAN          | M           | I                | B               | 0         | 0   |
+| 1000001 | BRA          | M           | A                | A               | 0         | 0   |
+| 1000002 | FRA          | M           | A                | A               | 0         | 0   |
+| 1000003 | BRA          | M           | I                | B               | 0         | 0   |
+| 1000004 | DEU          | F           | A                | A               | 0         | 0   |
+...
+...
+...
