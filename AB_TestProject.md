@@ -170,4 +170,58 @@ Outpuy :
 | Treatment Group | 73.23558109639180705 |
 
 
-### Question 8: 
+### Question 8: Why does it matter to include users who did not convert when calculating the average amount spent per user?
+~~~~sql
+WITH AvgSpent AS (
+  SELECT
+    usr.id,
+    --act.uid,
+    --grp.uid,
+    grp.group,
+    SUM(act.spent)::NUMERIC AS usr_spent
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  LEFT JOIN groups AS grp
+    ON grp.uid = usr.id
+  --WHERE act.uid IS NOT NULL
+  GROUP BY 1,2--,3,4
+  ORDER BY 1
+),
+UserConversion AS (  
+  SELECT
+  	usr.id,
+  	grp.group,
+    CASE
+      WHEN act.spent > 0 THEN 1
+      ELSE 0
+    END AS usr_conversion
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  LEFT JOIN groups AS grp
+  	ON grp.uid = usr.id
+  --WHERE grp.group IS NULL
+  GROUP BY 1,2, usr.id, act.spent
+)
+SELECT
+	--avs.group,
+  CASE
+  	WHEN avs.group = 'A' THEN 'Control Group'
+    WHEN avs.group = 'B' THEN 'Treatment Group'
+    ELSE 'Unknown'
+  END AS usr_group,
+	AVG(avs.usr_spent) AS avg_usr_spent,
+  (SUM(uc.usr_conversion)::numeric/COUNT(uc.usr_conversion)::numeric)*100 AS usr_conversion_rate
+FROM AvgSpent AS avs
+LEFT JOIN UserConversion AS uc
+	ON uc.id = avs.id
+GROUP BY 1;
+~~~~
+
+Output :
+
+| usr_group       | avg_usr_spent        | usr_conversion_rate    |
+| --------------- | -------------------- | ---------------------- |
+| Control Group   | 88.3088413770502625  | 4.15539709859847553500 |
+| Treatment Group | 75.32075704056783165 | 4.93922204213938411700 |
