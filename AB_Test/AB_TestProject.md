@@ -99,6 +99,7 @@ Output:
 ~~~~sql
 WITH UserConversion AS (  
   SELECT
+  	DISTINCT usr.id,
   	grp.group,
     CASE
       WHEN act.spent > 0 THEN 1
@@ -110,7 +111,7 @@ WITH UserConversion AS (
   LEFT JOIN groups AS grp
   	ON grp.uid = usr.id
   --WHERE grp.group IS NULL
-  GROUP BY 1, usr.id, act.spent
+  GROUP BY 1,2, usr.id, act.spent
 )
 
 SELECT
@@ -127,8 +128,8 @@ Output :
 
 | usr_group       | usr_conversion_rate    |
 | --------------- | ---------------------- |
-| Control Group   | 4.15539709859847553500 |
-| Treatment Group | 4.93922204213938411700 |
+| Control Group   | 3.92309904284599268800 |
+| Treatment Group | 4.63008130081300813000 |
 
 
 ### Question 7: What is the average amount spent per user for the control and treatment groups, including users who did not convert?
