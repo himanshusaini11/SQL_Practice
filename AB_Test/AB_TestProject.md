@@ -73,6 +73,7 @@ Output:
 ~~~~sql
 WITH UserConversion AS (  
   SELECT
+  	DISTINCT usr.id,
     CASE
       WHEN act.spent > 0 THEN 1
       ELSE 0
@@ -92,7 +93,7 @@ Output:
 
 | usr_conversion_rate    |
 | ---------------------- |
-| 4.54952935903182429400 |
+| 4.27844635596510226200 |
 
 
 ### Question 6: What is the user conversion rate for the control and treatment groups?
