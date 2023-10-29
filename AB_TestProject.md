@@ -93,3 +93,42 @@ Output:
 | usr_conversion_rate    |
 | ---------------------- |
 | 4.54952935903182429400 |
+
+
+### Question 6: What is the user conversion rate for the control and treatment groups?
+~~~~sql
+WITH UserConversion AS (  
+  SELECT
+  	grp.group,
+    CASE
+      WHEN act.spent > 0 THEN 1
+      ELSE 0
+    END AS usr_conversion
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  LEFT JOIN groups AS grp
+  	ON grp.uid = usr.id
+  --WHERE grp.group IS NULL
+  GROUP BY 1, usr.id, act.spent
+)
+
+SELECT
+	CASE
+  	WHEN uc.group = 'A' THEN 'Control Group'
+    ELSE 'Treatment Group'
+  END AS usr_group,
+  (SUM(uc.usr_conversion)::numeric/COUNT(uc.usr_conversion)::numeric)*100 AS usr_conversion_rate
+FROM UserConversion AS uc
+GROUP BY usr_group;
+~~~~
+
+Output :
+
+| usr_group       | usr_conversion_rate    |
+| --------------- | ---------------------- |
+| Control Group   | 4.15539709859847553500 |
+| Treatment Group | 4.93922204213938411700 |
+
+
+### Question 7: What is the average amount spent per user for the control and treatment groups, including users who did not convert?
