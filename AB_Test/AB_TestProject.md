@@ -233,7 +233,7 @@ Output :
 ~~~~sql
 WITH AvgSpent AS (
   SELECT
-    usr.id,
+    DISTINCT usr.id,
     --act.uid,
     --grp.uid,
     grp.group,
@@ -249,7 +249,7 @@ WITH AvgSpent AS (
 ),
 UserConversion AS (  
   SELECT
-  	usr.id,
+  	DISTINCT usr.id,
   	grp.group,
     CASE
       WHEN act.spent > 0 THEN 1
@@ -273,7 +273,7 @@ SELECT
   COUNT(avs.id) AS num_users,
   SUM(uc.usr_conversion)::numeric AS num_users_converted,
   (SUM(uc.usr_conversion)::numeric/COUNT(uc.usr_conversion)::numeric)*100 AS usr_conversion_rate,
-	AVG(avs.usr_spent) AS avg_usr_spent
+	SUM(avs.usr_spent)/COUNT(avs.id) AS avg_spent_per_user
 FROM AvgSpent AS avs
 LEFT JOIN UserConversion AS uc
 	ON uc.id = avs.id
@@ -282,10 +282,10 @@ GROUP BY avs.group;
 
 Output :
 
-| usr_group       | num_users | num_users_converted | usr_conversion_rate    | avg_usr_spent        |
-| --------------- | --------- | ------------------- | ---------------------- | -------------------- |
-| Treatment Group | 24680     | 1219                | 4.93922204213938411700 | 75.32075704056783165 |
-| Control Group   | 24402     | 1014                | 4.15539709859847553500 | 88.3088413770502625  |
+| usr_group       | num_users | num_users_converted | usr_conversion_rate    | avg_spent_per_user  |
+| --------------- | --------- | ------------------- | ---------------------- | ------------------- |
+| Treatment Group | 24600     | 1139                | 4.63008130081300813000 | 3.39086694588578326 |
+| Control Group   | 24343     | 955                 | 3.92309904284599268800 | 3.3745184679288412  |
 
 --------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
