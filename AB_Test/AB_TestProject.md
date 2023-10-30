@@ -159,17 +159,17 @@ SELECT
     WHEN avs.group = 'B' THEN 'Treatment Group'
     ELSE 'Unknown'
   END AS usr_group,
-	AVG(avs.usr_spent) AS avg_usr_spent
+	SUM(avs.usr_spent)/COUNT(avs.id) AS avg_spent_per_user
 FROM AvgSpent AS avs
 GROUP BY 1;
 ~~~~
 
 Outpuy :
 
-| usr_group       | avg_usr_spent        |
-| --------------- | -------------------- |
-| Control Group   | 86.0166524238657396  |
-| Treatment Group | 73.23558109639180705 |
+| usr_group       | avg_spent_per_user  |
+| --------------- | ------------------- |
+| Control Group   | 3.3745184679288412  |
+| Treatment Group | 3.39086694588578326 |
 
 
 ### Question 8: Why does it matter to include users who did not convert when calculating the average amount spent per user?
