@@ -176,7 +176,7 @@ Outpuy :
 ~~~~sql
 WITH AvgSpent AS (
   SELECT
-    usr.id,
+    DISTINCT usr.id,
     --act.uid,
     --grp.uid,
     grp.group,
@@ -192,7 +192,7 @@ WITH AvgSpent AS (
 ),
 UserConversion AS (  
   SELECT
-  	usr.id,
+  	DISTINCT usr.id,
   	grp.group,
     CASE
       WHEN act.spent > 0 THEN 1
@@ -213,7 +213,7 @@ SELECT
     WHEN avs.group = 'B' THEN 'Treatment Group'
     ELSE 'Unknown'
   END AS usr_group,
-	AVG(avs.usr_spent) AS avg_usr_spent,
+	SUM(avs.usr_spent)/COUNT(avs.id) AS avg_spent_per_user,
   (SUM(uc.usr_conversion)::numeric/COUNT(uc.usr_conversion)::numeric)*100 AS usr_conversion_rate
 FROM AvgSpent AS avs
 LEFT JOIN UserConversion AS uc
@@ -223,10 +223,10 @@ GROUP BY 1;
 
 Output :
 
-| usr_group       | avg_usr_spent        | usr_conversion_rate    |
-| --------------- | -------------------- | ---------------------- |
-| Control Group   | 88.3088413770502625  | 4.15539709859847553500 |
-| Treatment Group | 75.32075704056783165 | 4.93922204213938411700 |
+| usr_group       | avg_spent_per_user  | usr_conversion_rate    |
+| --------------- | ------------------- | ---------------------- |
+| Control Group   | 3.3745184679288412  | 3.92309904284599268800 |
+| Treatment Group | 3.39086694588578326 | 4.63008130081300813000 |
 
 
 ### Question 9: Why does it matter to include users who did not convert when calculating the average amount spent per user?
