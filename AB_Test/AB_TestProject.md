@@ -164,7 +164,7 @@ FROM AvgSpent AS avs
 GROUP BY 1;
 ~~~~
 
-Outpuy :
+Output :
 
 | usr_group       | avg_spent_per_user  |
 | --------------- | ------------------- |
