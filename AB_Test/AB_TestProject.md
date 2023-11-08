@@ -295,32 +295,49 @@ Output :
 
 ### Question : Write a SQL query that returns: the user ID, the user’s country, the user’s gender, the user’s device type, the user’s test group, whether or not they converted (spent > $0), and how much they spent in total ($0+).
 ~~~~sql
+WITH UserConv AS (
+  SELECT
+  	DISTINCT usr.id,
+    COALESCE(usr.country, 'Unknown') AS country,
+    COALESCE(usr.gender, 'Unknown') AS gender,
+    COALESCE(grp.device, 'Unknown') AS device,
+    COALESCE(grp.group, 'Unknown') AS "group",
+    CASE
+      WHEN act.spent > 0 THEN 1
+      ELSE 0
+    END AS user_conv
+  FROM users AS usr
+  LEFT JOIN groups AS grp
+		ON grp.uid = usr.id
+  LEFT JOIN activity AS act
+		ON act.uid = usr.id
+  )
 SELECT
-	usr.id AS user_id,
-  COALESCE(usr.country, 'Unknown') AS user_country,
-  COALESCE(usr.gender, 'Unknown') AS user_gender,
-  COALESCE(grp.device, 'Unknown') AS user_device_type,
-  COALESCE(grp.group, 'Unknown') AS user_test_group,
-  CASE
-  	WHEN act.spent > 0 THEN 1
-    ELSE 0
-  END AS user_conv,
-  SUM(COALESCE(act.spent, 0))::NUMERIC
-FROM users AS usr
-LEFT JOIN groups AS grp
-	ON grp.uid = usr.id
+	uc.id,
+  uc.country,
+	uc.gender,
+	uc.device,
+	uc.group,
+	uc.user_conv AS usr_conversion,
+	SUM(CAST(COALESCE(act.spent, 0) AS DECIMAL(100, 3))) AS spent
+FROM UserConv AS uc
 LEFT JOIN activity AS act
-	ON act.uid = usr.id
-GROUP BY usr.id,grp.device,grp.group,act.spent
-ORDER BY usr.id;
+	ON act.uid = uc.id
+GROUP BY 1, 2, 3, 4, 5, 6
+ORDER BY 1;
 ~~~~
 
 Output :
-| user_id | user_country | user_gender | user_device_type | user_test_group | user_conv | sum |
-| ------- | ------------ | ----------- | ---------------- | --------------- | --------- | --- |
-| 1000000 | CAN          | M           | I                | B               | 0         | 0   |
-| 1000001 | BRA          | M           | A                | A               | 0         | 0   |
-| 1000002 | FRA          | M           | A                | A               | 0         | 0   |
-| 1000003 | BRA          | M           | I                | B               | 0         | 0   |
-| 1000004 | DEU          | F           | A                | A               | 0         | 0   |
+| id      | country | gender  | device | group | usr_conversion | spent |
+| ------- | ------- | ------- | ------ | ----- | -------------- | ----- |
+| 1000000 | CAN     | M       | I      | B     | 0              | 0.000 |
+| 1000001 | BRA     | M       | A      | A     | 0              | 0.000 |
+| 1000002 | FRA     | M       | A      | A     | 0              | 0.000 |
+| 1000003 | BRA     | M       | I      | B     | 0              | 0.000 |
+| 1000004 | DEU     | F       | A      | A     | 0              | 0.000 |
+| 1000005 | GBR     | F       | A      | B     | 0              | 0.000 |
+| 1000006 | ESP     | M       | A      | B     | 0              | 0.000 |
+| 1000007 | BRA     | F       | A      | A     | 0              | 0.000 |
+| 1000008 | BRA     | F       | A      | A     | 0              | 0.000 |
+| 1000009 | USA     | Unknown | A      | A     | 0              | 0.000 |
 ...
