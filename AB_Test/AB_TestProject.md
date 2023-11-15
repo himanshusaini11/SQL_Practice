@@ -1,4 +1,4 @@
-#### Understanding the GloBox Database
+# Understanding the GloBox Database
 
 ### Question 1: Can a user show up more than once in the activity table? Yes or no, and why?
 ~~~~sql
@@ -343,8 +343,8 @@ Output :
 ...
 
 
-### Novelty Analysis in A/B Test
-# First organize the data for time-series analysis with respect to conversion rate, average spent, converted users or users who paid, and total number of users. Here, is the SQL querry for that
+# Novelty Analysis in A/B Test
+### First organize the data for time-series analysis with respect to conversion rate, average spent, converted users or users who paid, and total number of users. Here, is the SQL querry for that
 
 ~~~~sql
 WITH DataSet AS (
