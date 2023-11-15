@@ -341,3 +341,69 @@ Output :
 | 1000008 | BRA     | F       | A      | A     | 0              | 0.000 |
 | 1000009 | USA     | Unknown | A      | A     | 0              | 0.000 |
 ...
+
+
+### Novelty Analysis in A/B Test
+# First organize the data for time-series analysis with respect to conversion rate, average spent, converted users or users who paid, and total number of users. Here, is the SQL querry for that
+
+~~~~sql
+WITH DataSet AS (
+  SELECT
+    DISTINCT usr.id,
+    SUM(CAST(COALESCE(act.spent, 0) AS DECIMAL(100, 3))) AS spent,
+    CASE
+      WHEN act.spent > 0 THEN 1
+      ELSE 0
+    END AS usr_conversion,
+    COALESCE(grp.group, 'Unknown') AS group,
+    --act.dt
+  	grp.join_dt
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  LEFT JOIN groups AS grp
+    ON grp.uid = usr.id
+  GROUP BY 1,3,4,5
+  ORDER BY 1
+)
+SELECT
+	ds.join_dt,
+  ds.group,
+  CAST((SUM(ds.usr_conversion)::numeric/COUNT(ds.usr_conversion)::numeric)*100 AS DECIMAL(100,3)) AS conversion_rate,
+  CAST(AVG(ds.spent) AS DECIMAL(100,3)) AS avg_spent,
+  SUM(ds.usr_conversion) AS num_usr_converted,
+  COUNT(ds.id) AS tot_num_usr
+FROM DataSet AS ds
+GROUP BY ds.join_dt, ds.group
+ORDER BY ds.join_dt;
+~~~~
+
+Output :
+| join_dt    | group | conversion_rate | avg_spent | num_usr_converted | tot_num_usr |
+| ---------- | ----- | --------------- | --------- | ----------------- | ----------- |
+| 2023-01-25 | B     | 4.532           | 3.271     | 268               | 5913        |
+| 2023-01-25 | A     | 3.942           | 3.293     | 226               | 5733        |
+| 2023-01-26 | A     | 3.841           | 3.677     | 158               | 4114        |
+| 2023-01-26 | B     | 4.909           | 3.236     | 204               | 4156        |
+| 2023-01-27 | A     | 4.082           | 3.366     | 125               | 3062        |
+| 2023-01-27 | B     | 4.764           | 3.830     | 142               | 2981        |
+| 2023-01-28 | B     | 4.568           | 3.443     | 102               | 2233        |
+| 2023-01-28 | A     | 4.762           | 3.937     | 110               | 2310        |
+| 2023-01-29 | B     | 4.329           | 3.013     | 78                | 1802        |
+| 2023-01-29 | A     | 3.683           | 2.815     | 65                | 1765        |
+| 2023-01-30 | A     | 3.809           | 3.122     | 55                | 1444        |
+| 2023-01-30 | B     | 4.483           | 3.015     | 65                | 1450        |
+| 2023-01-31 | A     | 3.538           | 3.042     | 42                | 1187        |
+| 2023-01-31 | B     | 4.481           | 4.398     | 54                | 1205        |
+| 2023-02-01 | B     | 3.911           | 2.396     | 42                | 1074        |
+| 2023-02-01 | A     | 4.273           | 3.919     | 42                | 983         |
+| 2023-02-02 | A     | 3.883           | 3.325     | 36                | 927         |
+| 2023-02-02 | B     | 3.995           | 2.218     | 35                | 876         |
+| 2023-02-03 | A     | 3.747           | 3.194     | 29                | 774         |
+| 2023-02-03 | B     | 4.566           | 4.695     | 40                | 876         |
+| 2023-02-04 | A     | 2.826           | 2.549     | 21                | 743         |
+| 2023-02-04 | B     | 5.517           | 3.551     | 40                | 725         |
+| 2023-02-05 | B     | 4.606           | 4.060     | 31                | 673         |
+| 2023-02-05 | A     | 3.167           | 3.540     | 21                | 663         |
+| 2023-02-06 | A     | 3.918           | 3.139     | 25                | 638         |
+| 2023-02-06 | B     | 5.975           | 3.900     | 38                | 636         |
