@@ -407,3 +407,52 @@ Output :
 | 2023-02-05 | A     | 3.167           | 3.540     | 21                | 663         |
 | 2023-02-06 | A     | 3.918           | 3.139     | 25                | 638         |
 | 2023-02-06 | B     | 5.975           | 3.900     | 38                | 636         |
+
+
+### Second, I have calculated that how many days customer takes to be converted.
+~~~~sql
+WITH DataSet AS (
+  SELECT
+    DISTINCT usr.id,
+  	grp.group,
+  	CAST(EXTRACT(DAY FROM (CAST(act.dt AS TIMESTAMP) - CAST(grp.join_dt AS TIMESTAMP))) AS INTEGER) AS num_days_converted
+  FROM users AS usr
+  LEFT JOIN activity AS act
+    ON act.uid = usr.id
+  LEFT JOIN groups AS grp
+    ON grp.uid = usr.id
+  WHERE act.dt IS NOT NULL
+  GROUP BY 1,2,3
+  ORDER BY 1
+)
+SELECT
+  SUM(ds.num_days_converted) AS num_days_converted,
+  CASE
+  	WHEN ds.group = 'A' THEN 'Control Group'
+    WHEN ds.group = 'B' THEN 'Treatment Group'
+    ELSE 'Unknown'
+  END AS group,
+  COUNT(ds.id) AS tot_num_usr
+FROM DataSet AS ds
+GROUP BY num_days_converted, ds.group
+ORDER BY num_days_converted;
+~~~~
+
+Output : 
+
+| num_days_converted | group           | tot_num_usr |
+| ------------------ | --------------- | ----------- |
+| 0                  | Control Group   | 746         |
+| 0                  | Treatment Group | 902         |
+| 60                 | Control Group   | 10          |
+| 66                 | Control Group   | 66          |
+| 94                 | Treatment Group | 94          |
+| 102                | Treatment Group | 17          |
+| 110                | Control Group   | 55          |
+| 124                | Treatment Group | 62          |
+| 168                | Control Group   | 56          |
+| 170                | Control Group   | 34          |
+| 174                | Treatment Group | 58          |
+| 188                | Treatment Group | 47          |
+| 188                | Control Group   | 47          |
+| 195                | Treatment Group | 39          |
