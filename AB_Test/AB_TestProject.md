@@ -426,7 +426,7 @@ WITH DataSet AS (
   ORDER BY 1
 )
 SELECT
-  SUM(ds.num_days_converted) AS num_days_converted,
+  ds.num_days_converted,
   CASE
   	WHEN ds.group = 'A' THEN 'Control Group'
     WHEN ds.group = 'B' THEN 'Treatment Group'
@@ -444,15 +444,15 @@ Output :
 | ------------------ | --------------- | ----------- |
 | 0                  | Control Group   | 746         |
 | 0                  | Treatment Group | 902         |
-| 60                 | Control Group   | 10          |
-| 66                 | Control Group   | 66          |
-| 94                 | Treatment Group | 94          |
-| 102                | Treatment Group | 17          |
-| 110                | Control Group   | 55          |
-| 124                | Treatment Group | 62          |
-| 168                | Control Group   | 56          |
-| 170                | Control Group   | 34          |
-| 174                | Treatment Group | 58          |
-| 188                | Treatment Group | 47          |
-| 188                | Control Group   | 47          |
-| 195                | Treatment Group | 39          |
+| 1                  | Control Group   | 66          |
+| 1                  | Treatment Group | 94          |
+| 2                  | Control Group   | 55          |
+| 2                  | Treatment Group | 62          |
+| 3                  | Control Group   | 56          |
+| 3                  | Treatment Group | 58          |
+| 4                  | Control Group   | 47          |
+| 4                  | Treatment Group | 47          |
+| 5                  | Control Group   | 34          |
+| 5                  | Treatment Group | 39          |
+| 6                  | Control Group   | 10          |
+| 6                  | Treatment Group | 17          |
