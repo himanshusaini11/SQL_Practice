@@ -328,35 +328,48 @@ OUTPUT:
 Summary of the Results
 1. Conversion rate.
     i. Overall Conversion
-        | conv_mwc | conv_swc | conv_oth |
-        | -------- | -------- | -------- |
-        | 34.254   | 36.597   | 34.497   |
+
+| conv_mwc | conv_swc | conv_oth |
+| -------- | -------- | -------- |
+| 34.254   | 36.597   | 34.497   |
+   
     ii. Conversion Rate with Flight Discount = True and Hotel Discount = True
-        | conv_mwc | conv_swtc | conv_oth |
-        | -------- | --------- | -------- |
-        | 0.791    | 0.827     | 0.787    |
+
+| conv_mwc | conv_swtc | conv_oth |
+| -------- | --------- | -------- |
+| 0.791    | 0.827     | 0.787    |
+
     iii. Conversion Rate with Flight Discount = True and Hotel Discount = False
-        | conv_mwc | conv_swtc | conv_oth |
-        | -------- | --------- | -------- |
-        | 4.259    | 4.575     | 4.274    |
+
+| conv_mwc | conv_swtc | conv_oth |
+| -------- | --------- | -------- |
+| 4.259    | 4.575     | 4.274    |
+
     iv. Conversion Rate with Flight Discount = False and Hotel Discount = True
-        | conv_mwc | conv_swtc | conv_oth |
-        | -------- | --------- | -------- |
-        | 3.656    | 3.887     | 3.690    |
+
+| conv_mwc | conv_swtc | conv_oth |
+| -------- | --------- | -------- |
+| 3.656    | 3.887     | 3.690    |
+
     v. Conversion Rate with Flight Discount = False and Hotel Discount = False
-        | conv_mwc | conv_swtc | conv_oth |
-        | -------- | --------- | -------- |
-        | 25.549   | 27.308    | 25.747   |
-2. Number of Trips the group made.
-        | num_trips_mwc | num_trips_swtc | num_trips_oth |
-        | ------------- | -------------- | ------------- |
-        | 284936        | 883001         | 733101        |
-3. Number of days they spend during the Trips the group made with the total revenue they have generated.
-        | usr_status              | num_days_trip | revenue       |
-        | ----------------------- | ------------- | ------------- |
-        | Married with children   | 1437185       | 274743381.040 |
-        | Others                  | 3674940       | 456094158.020 |
-        | Single without children | 4315705       | 494150840.890 |
+
+| conv_mwc | conv_swtc | conv_oth |
+| -------- | --------- | -------- |
+| 25.549   | 27.308    | 25.747   |
+
+3. Number of Trips the group made.
+
+| num_trips_mwc | num_trips_swtc | num_trips_oth |
+| ------------- | -------------- | ------------- |
+| 284936        | 883001         | 733101        |
+
+4. Number of days they spend during the Trips the group made with the total revenue they have generated.
+
+| usr_status              | num_days_trip | revenue       |
+| ----------------------- | ------------- | ------------- |
+| Married with children   | 1437185       | 274743381.040 |
+| Others                  | 3674940       | 456094158.020 |
+| Single without children | 4315705       | 494150840.890 |
 
 Discussion: Based on a comprehensive analysis of conversion rates and user behavior, it is evident that providing discounts does not significantly impact the conversion of users. A substantial portion of conversions is observed within the category of users who did not avail any discounts. Notably, the majority of trips are taken by individuals without children, emphasizing the importance of tailoring trip packages specifically for this demographic.
 
