@@ -328,31 +328,31 @@ OUTPUT:
 Summary of the Results
 1. Conversion rate.
 
-    i. Overall Conversion
+i. Overall Conversion
 
 | conv_mwc | conv_swc | conv_oth |
 | -------- | -------- | -------- |
 | 34.254   | 36.597   | 34.497   |
    
-    ii. Conversion Rate with ```Flight Discount = True``` and ```Hotel Discount = True```
+ii. Conversion Rate with ```Flight Discount = True``` and ```Hotel Discount = True```
 
 | conv_mwc | conv_swtc | conv_oth |
 | -------- | --------- | -------- |
 | 0.791    | 0.827     | 0.787    |
 
-    iii. Conversion Rate with ```Flight Discount = True``` and ```Hotel Discount = False```
+iii. Conversion Rate with ```Flight Discount = True``` and ```Hotel Discount = False```
 
 | conv_mwc | conv_swtc | conv_oth |
 | -------- | --------- | -------- |
 | 4.259    | 4.575     | 4.274    |
 
-    iv. Conversion Rate with ```Flight Discount = False``` and ```Hotel Discount = True```
+iv. Conversion Rate with ```Flight Discount = False``` and ```Hotel Discount = True```
 
 | conv_mwc | conv_swtc | conv_oth |
 | -------- | --------- | -------- |
 | 3.656    | 3.887     | 3.690    |
 
-    v. Conversion Rate with ```Flight Discount = False``` and ```Hotel Discount = False```
+v. Conversion Rate with ```Flight Discount = False``` and ```Hotel Discount = False```
 
 | conv_mwc | conv_swtc | conv_oth |
 | -------- | --------- | -------- |
